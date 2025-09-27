@@ -1,5 +1,14 @@
--- por categoría (products)
+-- 6 Habilitar RLS en todas las tablas
+alter table public.countries enable row level security;
+alter table public.categories enable row level security;
+alter table public.products enable row level security;
+alter table public.customers enable row level security;
+alter table public.invoices enable row level security;
+alter table public.invoice_lines enable row level security;
+alter table public.user_allowed_country enable row level security;
+alter table public.user_allowed_category enable row level security;
 
+-- 6.1 por categoría (products)
 create policy "products_by_user_category_select" 
 on public.products for select 
 to authenticated 
@@ -37,7 +46,7 @@ using (exists (
 ));
 
 
--- por país (customers)
+-- 6.2 por país (customers)
 create policy "customers_by_user_country_select" 
 on public.customers for select 
 to authenticated 
@@ -47,7 +56,7 @@ using (exists (
 customers.country_code 
 ));
 
--- invoices (pais de cliente)
+-- 6.3 invoices (pais de cliente)
 
 create policy "invoices_by_user_country_select" 
 on public.invoices for select 
@@ -60,7 +69,7 @@ using (exists (
   where c.id = invoices.customer_id 
 ));
 
--- invoice_lines (pais y categoria)
+-- 6.4 invoice_lines (pais y categoria)
 create policy "lines_by_country_and_category_select" 
 on public.invoice_lines for select 
 to authenticated 

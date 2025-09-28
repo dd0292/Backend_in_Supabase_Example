@@ -31,19 +31,36 @@ insert into public.customers (name, email, country_code) values
 ('Ana Costa', 'ana@example.com', 'BR'),
 ('Pedro Garcia', 'pedro@example.com', 'ES');
 
--- Nota: Los usuarios de Auth se deben crear manualmente en Supabase Studio
--- y luego insertar sus autorizaciones aquí (reemplazar los UUIDs con los reales)
+-- Note: Authentication users must be created manually in Supabase Studio 
+-- and then insert your authorizations here (replace the UUIDs with the real ones)
 /*
--- Ejemplo de inserción de autorizaciones (ejecutar después de crear usuarios en Auth)
+-- Example of inserting authorizations (running after creating users in Auth)
+
 insert into public.user_allowed_country (user_id, country_code) values
-('uuid-usuario-1', 'US'),
-('uuid-usuario-1', 'CR'),
-('uuid-usuario-2', 'MX'),
-('uuid-usuario-2', 'BR');
+('UUID-01', 'US'),
+('UUID-01', 'CR'),
+('UUID-01', 'MX'),
+('UUID-01', 'BR'),
+('UUID-01', 'ES'),
+
+('UUID-02', 'US'),
+('UUID-02', 'CR'),
+('UUID-02', 'MX'),
+
+('UUID-03', 'BR'),
+('UUID-03', 'ES');
 
 insert into public.user_allowed_category (user_id, category_id) values
-('uuid-usuario-1', 1),
-('uuid-usuario-1', 2),
-('uuid-usuario-2', 3),
-('uuid-usuario-2', 4);
+('UUID-01', '1'),
+('UUID-01', '2'),
+('UUID-01', '3'),
+('UUID-01', '4'),
+('UUID-01', '5'),
+
+('UUID-02', '1'),
+('UUID-02', '2'),
+('UUID-02', '3'),
+
+('UUID-03', '4'),
+('UUID-03', '5');
 */

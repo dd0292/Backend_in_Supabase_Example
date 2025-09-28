@@ -131,3 +131,11 @@ with check (
     where p.id = invoice_lines.product_id 
   ) 
 );
+
+create policy"user_see_own_category_perms" 
+on public.user_allowed_categoryforR select 
+to authenticated using (user_id = auth.uid());
+
+create policy"user_see_own_country_perms" 
+on public.user_allowed_country for select 
+to authenticated using (user_id = auth.uid());

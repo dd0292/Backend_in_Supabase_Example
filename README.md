@@ -37,7 +37,7 @@ See `/db`, `/app`, `/tests`, `/deliverables`.
   - `SUPABASE_ANON_KEY` — anon/public key for the client app
   - `USER_EMAIL` / `USER_PASSWORD` — test user credentials (for app quick-demo)
 
-## Quick start (developer)
+## Quick start
 1. Open Supabase Studio → SQL editor.
 2. Paste and run `db/schema.sql`.
 3. Run `db/seeds.sql` to insert minimal demo data.

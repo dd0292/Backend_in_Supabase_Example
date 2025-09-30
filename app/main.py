@@ -5,13 +5,21 @@ load_dotenv()
 
 URL = os.getenv("SUPABASE_URL") 
 KEY = os.getenv("SUPABASE_ANON_KEY") 
-EMAIL = os.getenv("USER03_EMAIL") 
-PWD = os.getenv("USER03_PASSWORD") 
+EMAIL = os.getenv("USER_EMAIL") 
+PWD = os.getenv("USER_PASSWORD") 
+
+# For multiple users (to test RLS):
+EMAIL_01 = os.getenv("USER01_EMAIL")
+PWD_01 = os.getenv("USER01_PASSWORD")
+EMAIL_02 = os.getenv("USER02_EMAIL")
+PWD_02 = os.getenv("USER02_PASSWORD")
+EMAIL_03 = os.getenv("USER03_EMAIL")
+PWD_03 = os.getenv("USER03_PASSWORD")
  
 def login() -> Client: 
     
     sb: Client = create_client(URL, KEY) 
-    auth = sb.auth.sign_in_with_password({"email": EMAIL, "password":PWD})
+    auth = sb.auth.sign_in_with_password({"email": EMAIL_01, "password":PWD_01}) #Change access here
     
     if not auth.session: 
         raise SystemExit("Login failed.") 

@@ -1,6 +1,6 @@
 # Backend — Supabase (Example)
 
-By: David Chaves Mena, Sergio, Igancion, Rachel, Donoso
+By: David Chaves Mena, Sergio, Igancion, Rachel, Rodrigo Donoso
 
 **Short**: Example of a backend of a sales app using Supabase (Postgres + PostgREST + Auth) with a small Python client to exercise RLS and RPCs.
 

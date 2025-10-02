@@ -1,4 +1,5 @@
 import os 
+import json
 from supabase import create_client, Client 
 from dotenv import load_dotenv
 load_dotenv()
@@ -19,7 +20,7 @@ PWD_03 = os.getenv("USER03_PASSWORD")
 def login() -> Client: 
     
     sb: Client = create_client(URL, KEY) 
-    auth = sb.auth.sign_in_with_password({"email": EMAIL_02, "password":PWD_02}) #Change access here
+    auth = sb.auth.sign_in_with_password({"email": EMAIL_01, "password":PWD_01}) #Change access here
     
     if not auth.session: 
         raise SystemExit("Login failed.") 
@@ -28,7 +29,7 @@ def login() -> Client:
     return sb 
  
 def list_my_products(sb: Client): 
-    products = sb.table("products").select("id, name, category_id").execute()
+    products = sb.table("products").select("id, name, category_id", "unit_price").execute()
     category_details = sb.table("categories").select("*").execute()
     cat_map = {cat["id"]: cat["name"] for cat in category_details.data}
     print("Products (RLS applied):", [(prod["id"], prod["name"], cat_map.get(prod["category_id"])) for prod in products.data]) 
@@ -87,18 +88,15 @@ def create_invoice_menu(sb: Client, customers, products):
         print("Customer ID not found.")
         return
 
-    # Create invoice
-    invoice_id = create_invoice(sb, customer_id)
-    print(f"Created invoice ID: {invoice_id}")
-
-    # Add lines
+    # Build items list
+    items = []
     while True:
         if not products:
             print("No products available.")
             break
         print("\nProducts:")
         for p in products:
-            print(f"{p['id']}: {p['name']}")
+            print(f"{p['id']}: {p['name']} (${p['unit_price']})")
         try:
             product_id = int(input("Enter product ID to add (or 0 to finish): "))
         except ValueError:
@@ -111,16 +109,37 @@ def create_invoice_menu(sb: Client, customers, products):
             continue
         try:
             qty = float(input("Enter quantity: "))
-            unit_price = float(input("Enter unit price: "))
+            unit_price_input = input("Enter unit price (leave blank to use default): ")
+            item = {"product_id": product_id, "quantity": qty}
+            if unit_price_input.strip():
+                item["unit_price"] = float(unit_price_input)
+            items.append(item)
+            print("Item added.")
         except ValueError:
             print("Invalid number.")
             continue
-        add_line(sb, invoice_id, product_id, qty, unit_price)
-        print("Line added.")
 
-    # Show invoice with lines
-    print("\nFinal invoice:")
-    show_invoice_with_lines(sb, invoice_id)
+    if not items:
+        print("No items to invoice.")
+        return
+
+    # Build payload
+    payload = {
+        "customer_id": customer_id,
+        "items": items
+    }
+
+    # Call the RPC function
+    try:
+        print("Creating invoice with payload:", payload)
+        response = sb.rpc("create_invoice", payload).execute() #ESTO SE EJECUTA NO PROBLEMO; PERO IGUAL SE CAE!
+        data = response.data
+        
+    except Exception as e:
+        if (e.__getattribute__('code')!= 200):
+            print("Error creating invoice:", e)
+        else:
+            print("Invoice created successfully.") #I THINK
 
 if __name__ == "__main__": 
     

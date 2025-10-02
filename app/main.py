@@ -40,8 +40,7 @@ def create_invoice(sb: Client, customer_id: int):
     print("Invoice:", inv.data) 
     return inv.data[0]["id"] 
  
-def add_line(sb: Client, invoice_id: int, product_id: int, qty: float, 
-unit_price: float): 
+def add_line(sb: Client, invoice_id: int, product_id: int, qty: float, unit_price: float): 
     line_total = round(qty * unit_price, 2) 
     line = { 
         "invoice_id": invoice_id, 

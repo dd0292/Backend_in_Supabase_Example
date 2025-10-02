@@ -8,6 +8,7 @@ select
     c.country_code,
     p.name as product_name,
     cat.name as category_name,
+    cat.id as category_id,  -- Added for RLS filtering
     il.quantity,
     il.unit_price,
     il.line_total
@@ -20,6 +21,7 @@ join public.categories cat on cat.id = p.category_id;
 -- Ventas por categoría
 create or replace view public.v_sales_by_category as
 select 
+    cat.id as category_id,  -- Added for RLS filtering
     cat.name as category_name,
     count(distinct i.id) as invoice_count,
     count(il.id) as line_count,
@@ -49,7 +51,9 @@ group by c.country_code, co.name;
 -- Top productos últimos 30 días
 create or replace view public.v_top_products_30d as
 select 
+    p.id as product_id,  -- Added for RLS filtering
     p.name as product_name,
+    cat.id as category_id,  -- Added for RLS filtering
     cat.name as category_name,
     count(il.id) as sales_count,
     sum(il.quantity) as total_quantity,
@@ -59,27 +63,11 @@ join public.invoice_lines il on il.invoice_id = i.id
 join public.products p on p.id = il.product_id
 join public.categories cat on cat.id = p.category_id
 where i.invoice_date >= current_date - interval '30 days'
-group by p.id, p.name, cat.name
+group by p.id, p.name, cat.id, cat.name
 order by total_sales desc;
 
--- Habilitar RLS en las vistas
-alter view public.v_sales_fact enable row level security;
-alter view public.v_sales_by_category enable row level security;
-alter view public.v_sales_by_country enable row level security;
-alter view public.v_top_products_30d enable row level security;
-
--- Políticas para las vistas (mismas restricciones que las tablas base)
-create policy "v_sales_fact_select" on public.v_sales_fact for select to authenticated 
-using (
-    exists (
-        select 1 from public.user_allowed_country u 
-        where u.user_id = auth.uid() and u.country_code = v_sales_fact.country_code
-    )
-    and
-    exists (
-        select 1 from public.user_allowed_category u 
-        where u.user_id = auth.uid() and u.category_id in (
-            select category_id from public.products where name = v_sales_fact.product_name
-        )
-    )
-);
+-- En su lugar, usar security_barrier y security_invoker
+alter view public.v_sales_fact set (security_barrier = true);
+alter view public.v_sales_by_category set (security_barrier = true);
+alter view public.v_sales_by_country set (security_barrier = true);
+alter view public.v_top_products_30d set (security_barrier = true);

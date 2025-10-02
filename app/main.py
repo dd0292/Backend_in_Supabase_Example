@@ -16,10 +16,10 @@ PWD_02 = os.getenv("USER02_PASSWORD")
 EMAIL_03 = os.getenv("USER03_EMAIL")
 PWD_03 = os.getenv("USER03_PASSWORD")
  
-def login() -> Client: 
+def login(USER_EMAIL,USER_PWD) -> Client: 
     
     sb: Client = create_client(URL, KEY) 
-    auth = sb.auth.sign_in_with_password({"email": EMAIL_02, "password":PWD_02}) #Change access here
+    auth = sb.auth.sign_in_with_password({"email": USER_EMAIL, "password":USER_PWD}) #Change access here
     
     if not auth.session: 
         raise SystemExit("Login failed.") 
@@ -76,14 +76,20 @@ def debug_user_permissions(sb: Client):
     category_details = sb.table("categories").select("*").in_("id", category_ids).execute()
     print(f"Category permissions:", [cat["name"] for cat in category_details.data])
     
-    
-
-if __name__ == "__main__": 
-    
-    sb = login() 
+def printUser(USER_EMAIL,USER_PWD):
+    sb = login(USER_EMAIL,USER_PWD) 
     debug_user_permissions(sb)
     list_my_products(sb) 
-    list_my_customers(sb) 
+    list_my_customers(sb)   
+
+if __name__ == "__main__": 
+    print("====================== USER 1 ======================")
+    printUser(EMAIL_01,PWD_01)
+    print("====================== USER 2 ======================")
+    printUser(EMAIL_02,PWD_02)
+    print("====================== USER 3 ======================")
+    printUser(EMAIL_03,PWD_03)
+    
     # Completar: input() para IDs y crear factura + líneas
     
     """ 

@@ -17,10 +17,10 @@ PWD_02 = os.getenv("USER02_PASSWORD")
 EMAIL_03 = os.getenv("USER03_EMAIL")
 PWD_03 = os.getenv("USER03_PASSWORD")
  
-def login() -> Client: 
+def login(user_email:str,user_passowrd:str) -> Client: 
     
     sb: Client = create_client(URL, KEY) 
-    auth = sb.auth.sign_in_with_password({"email": EMAIL_01, "password":PWD_01}) #Change access here
+    auth = sb.auth.sign_in_with_password({"email": user_email, "password":user_passowrd}) #Change access here
     
     if not auth.session: 
         raise SystemExit("Login failed.") 
@@ -141,9 +141,96 @@ def create_invoice_menu(sb: Client, customers, products):
         else:
             print("Invoice created successfully.") #I THINK
 
-if __name__ == "__main__": 
+def list_invoices(sb: Client, customers, products):
+    invoices = sb.table("invoices").select("*").execute()
+
+    if not invoices:
+        print("No invoices found.")
+        return
+
+    for inv in invoices.data:
+        customer_name = sb.table("customers").select("name").eq("id", inv["customer_id"]).execute().data[0]["name"]
+        print(f"\nInvoice for {customer_name} : ${inv['total_amount']}")
+        # Get lines for this invoice
+        lines = sb.table("invoice_lines").select("*").eq("invoice_id", inv["id"]).execute().data
+        for line in lines:
+            product_name, default_unit_price = sb.table("products").select("name, unit_price").eq("id", line["product_id"]).execute().data[0].values()
+            print(f"- {line['quantity']} {product_name} : ${line['line_total']} (${line['unit_price']})")
+
+def list_invoices_by_customer(sb: Client, customers):
+    try:
+        customer_id = int(input("Enter customer ID to filter invoices: "))
+    except ValueError:
+        print("Invalid input.")
+        return
     
-    sb = login() 
+    if not any(c["id"] == customer_id for c in customers):
+        print("Customer ID not found.")
+        return
+
+    # Fetch invoices for this customer
+    invoices = sb.table("invoices").select("*").eq("customer_id", customer_id).execute()
+    if not invoices.data:
+        print("No invoices found for this customer.")
+        return
+
+    customer_name = sb.table("customers").select("name").eq("id", customer_id).execute().data[0]["name"]
+    print(f"\nInvoices for {customer_name}:")
+
+    for inv in invoices.data:
+        print(f"Invoice {inv['id']} on {inv['invoice_date']} - Total: ${inv['total_amount']}")
+        lines = sb.table("invoice_lines").select("*").eq("invoice_id", inv["id"]).execute().data
+        for line in lines:
+            product = sb.table("products").select("name").eq("id", line["product_id"]).execute().data[0]
+            print(f"  - {line['quantity']} x {product['name']} @ ${line['unit_price']} = ${line['line_total']}")
+
+def list_invoices_by_product(sb: Client, products):
+    try:
+        product_id = int(input("Enter product ID to filter invoices: "))
+    except ValueError:
+        print("Invalid input.")
+        return
+    
+    if not any(p["id"] == product_id for p in products):
+        print("Product ID not found.")
+        return
+
+    product_name = sb.table("products").select("name").eq("id", product_id).execute().data[0]["name"]
+
+    # Find all invoice_lines that contain this product
+    lines = sb.table("invoice_lines").select("invoice_id, quantity, unit_price, line_total").eq("product_id", product_id).execute()
+    if not lines.data:
+        print(f"No invoices found containing product {product_name}.")
+        return
+
+    print(f"\nInvoices containing product '{product_name}':")
+    for line in lines.data:
+        inv = sb.table("invoices").select("*").eq("id", line["invoice_id"]).execute().data[0]
+        customer_name = sb.table("customers").select("name").eq("id", inv["customer_id"]).execute().data[0]["name"]
+        print(f"Invoice {inv['id']} for {customer_name} - Date {inv['invoice_date']} - Total ${inv['total_amount']}")
+        print(f"  -> {line['quantity']} x {product_name} @ ${line['unit_price']} = ${line['line_total']}")
+
+
+if __name__ == "__main__": 
+    print("Choose user to log in:")
+    print("1. User 1")
+    print("2. User 2")
+    print("3. User 3")
+    print("4. Admin!")
+    choice = input("Enter choice (1-4): ")
+    if choice == "1":   
+        em, pwd = EMAIL_01, PWD_01
+    elif choice == "2":
+        em, pwd = EMAIL_02, PWD_02
+    elif choice == "3":
+        em, pwd = EMAIL_03, PWD_03
+    elif choice == "4":
+        em, pwd = EMAIL, PWD
+    else:
+        print("Invalid choice.")
+        exit(1)
+
+    sb = login(em, pwd)
     debug_user_permissions(sb)
     products = list_my_products(sb) 
     customers = list_my_customers(sb) 
@@ -151,11 +238,20 @@ if __name__ == "__main__":
     while True:
         print("\nMenu:")
         print("1. Create invoice")
-        print("2. Exit")
+        print("2. List invoices")
+        print("3. Filter invoices by customer")
+        print("4. Filter invoices by product")
+        print("5. Exit")
         choice = input("Choose an option: ")
         if choice == "1":
             create_invoice_menu(sb, customers, products)
         elif choice == "2":
+            list_invoices(sb, customers,products)
+        elif choice == "3":
+            list_invoices_by_customer(sb, customers)
+        elif choice == "4":
+            list_invoices_by_product(sb, products)
+        elif choice == "5":
             break
         else:
             print("Invalid option.")

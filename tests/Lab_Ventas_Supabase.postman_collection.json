@@ -1,0 +1,59 @@
+{
+	"info": {
+		"_postman_id": "1daba982-d7a4-41a5-b515-a45fdb39c9ef",
+		"name": "Lab_Ventas_Supabase",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "46267459",
+		"_collection_link": "https://rodrigo-7482025.postman.co/workspace/Rodrigo's-Workspace~5855ec7b-29d6-4589-8e20-6ee0269a3998/collection/46267459-1daba982-d7a4-41a5-b515-a45fdb39c9ef?action=share&source=collection_link&creator=46267459"
+	},
+	"item": [
+		{
+			"name": "Productos por categoria",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsImtpZCI6Im1nc0dYNURCVnJudGl4NmEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3JtYmV1ZWdvdGl6Y3N0aGF1cXR5LnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiIzYzU0NGEzMC04MzA0LTQ2OTItOWI0ZC03NDk4NGVhNjcwN2YiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzU5Mzc3OTUzLCJpYXQiOjE3NTkzNzQzNTMsImVtYWlsIjoidXNlcjNAdGVzdC5jb20iLCJwaG9uZSI6IiIsImFwcF9tZXRhZGF0YSI6eyJwcm92aWRlciI6ImVtYWlsIiwicHJvdmlkZXJzIjpbImVtYWlsIl19LCJ1c2VyX21ldGFkYXRhIjp7ImVtYWlsX3ZlcmlmaWVkIjp0cnVlfSwicm9sZSI6ImF1dGhlbnRpY2F0ZWQiLCJhYWwiOiJhYWwxIiwiYW1yIjpbeyJtZXRob2QiOiJwYXNzd29yZCIsInRpbWVzdGFtcCI6MTc1OTM3NDM1M31dLCJzZXNzaW9uX2lkIjoiZjRhYjgxOTMtMWMyNC00ODQyLThkY2ItOTVjYjkxZGUzODZhIiwiaXNfYW5vbnltb3VzIjpmYWxzZX0.N8dLkKD0I1XSRy-8Hdw5BPa1WAkNtK4pQv4nuO_yC_I",
+						"type": "text"
+					},
+					{
+						"key": "apiKey",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJtYmV1ZWdvdGl6Y3N0aGF1cXR5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkzNjA1MDEsImV4cCI6MjA3NDkzNjUwMX0.6UOZAtTgDaFoVudymTENrN8hWvRSOdecDUijPrE0nZY",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://rmbeuegotizcsthauqty.supabase.co/rest/v1/products?select=*&category_id=eq.1",
+					"protocol": "https",
+					"host": [
+						"rmbeuegotizcsthauqty",
+						"supabase",
+						"co"
+					],
+					"path": [
+						"rest",
+						"v1",
+						"products"
+					],
+					"query": [
+						{
+							"key": "select",
+							"value": "*"
+						},
+						{
+							"key": "category_id",
+							"value": "eq.1"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

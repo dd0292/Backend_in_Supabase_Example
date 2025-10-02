@@ -28,19 +28,19 @@ def login() -> Client:
     return sb 
  
 def list_my_products(sb: Client): 
-    # Check all products and their categories
     products = sb.table("products").select("id, name, category_id").execute()
     category_details = sb.table("categories").select("*").execute()
     cat_map = {cat["id"]: cat["name"] for cat in category_details.data}
-    res = sb.table("products").select("*").execute() 
-    print("Products (RLS applied):", [(prod["name"], cat_map.get(prod["category_id"])) for prod in products.data]) 
- 
+    print("Products (RLS applied):", [(prod["id"], prod["name"], cat_map.get(prod["category_id"])) for prod in products.data]) 
+    return products.data
+
 def list_my_customers(sb: Client): 
-    res = sb.table("customers").select("*").execute() 
-    print("Customers (RLS applied):", [(cx["name"], cx["country_code"]) for cx in res.data]) 
+    customers = sb.table("customers").select("*").execute() 
+    print("Customers (RLS applied):", [(cx["id"],cx["name"], cx["country_code"]) for cx in customers.data]) 
+    return customers.data
  
 def create_invoice(sb: Client, customer_id: int): 
-    inv = sb.table("invoices").insert({"customer_id": customer_id}).select("*").execute() 
+    inv = sb.table("invoices").insert({"customer_id": customer_id}).execute() 
     print("Invoice:", inv.data) 
     return inv.data[0]["id"] 
  
@@ -53,7 +53,7 @@ def add_line(sb: Client, invoice_id: int, product_id: int, qty: float, unit_pric
         "unit_price": unit_price, 
         "line_total": line_total 
     } 
-    res = sb.table("invoice_lines").insert(line).select("*").execute() 
+    res = sb.table("invoice_lines").insert(line).execute() 
     print("Line:", res.data) 
  
 def show_invoice_with_lines(sb: Client, invoice_id: int): 
@@ -76,21 +76,79 @@ def debug_user_permissions(sb: Client):
     category_details = sb.table("categories").select("*").in_("id", category_ids).execute()
     print(f"Category permissions:", [cat["name"] for cat in category_details.data])
     
-    
+def create_invoice_menu(sb: Client, customers, products):
+    # Select customer
+    try:
+        customer_id = int(input("Enter customer ID for the invoice: "))
+    except ValueError:
+        print("Invalid input.")
+        return
+    if not any(c["id"] == customer_id for c in customers):
+        print("Customer ID not found.")
+        return
+
+    # Create invoice
+    invoice_id = create_invoice(sb, customer_id)
+    print(f"Created invoice ID: {invoice_id}")
+
+    # Add lines
+    while True:
+        if not products:
+            print("No products available.")
+            break
+        print("\nProducts:")
+        for p in products:
+            print(f"{p['id']}: {p['name']}")
+        try:
+            product_id = int(input("Enter product ID to add (or 0 to finish): "))
+        except ValueError:
+            print("Invalid input.")
+            continue
+        if product_id == 0:
+            break
+        if not any(p["id"] == product_id for p in products):
+            print("Product ID not found.")
+            continue
+        try:
+            qty = float(input("Enter quantity: "))
+            unit_price = float(input("Enter unit price: "))
+        except ValueError:
+            print("Invalid number.")
+            continue
+        add_line(sb, invoice_id, product_id, qty, unit_price)
+        print("Line added.")
+
+    # Show invoice with lines
+    print("\nFinal invoice:")
+    show_invoice_with_lines(sb, invoice_id)
 
 if __name__ == "__main__": 
     
     sb = login() 
     debug_user_permissions(sb)
-    list_my_products(sb) 
-    list_my_customers(sb) 
+    products = list_my_products(sb) 
+    customers = list_my_customers(sb) 
     # Completar: input() para IDs y crear factura + líneas
+    while True:
+        print("\nMenu:")
+        print("1. Create invoice")
+        print("2. Exit")
+        choice = input("Choose an option: ")
+        if choice == "1":
+            create_invoice_menu(sb, customers, products)
+        elif choice == "2":
+            break
+        else:
+            print("Invalid option.")
+
     
+
     """ 
     CRUD	básico	de	categorías	y	productos.
     CRUD	básico	de	países	y	clientes.
     Registro	de	facturas	y	detalle	de	factura	(líneas).
     Listados	y	filtros	(por	categoría,	por	país,	por	rango	de	fechas). 
     """
+
     
     

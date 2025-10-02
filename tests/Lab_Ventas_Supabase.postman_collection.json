@@ -1,9 +1,10 @@
 {
 	"info": {
-		"_postman_id": "e3a686f1-25e5-478b-adc0-b42c67e38dbb",
+		"_postman_id": "4419b1f4-a078-4e49-b5d7-8bd361192049",
 		"name": "Lab_Ventas_Supabase",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "47936136"
+		"_exporter_id": "46267459",
+		"_collection_link": "https://rodrigo-7482025.postman.co/workspace/Rodrigo's-Workspace~5855ec7b-29d6-4589-8e20-6ee0269a3998/collection/46267459-4419b1f4-a078-4e49-b5d7-8bd361192049?action=share&source=collection_link&creator=46267459"
 	},
 	"item": [
 		{
@@ -37,10 +38,10 @@
 					}
 				},
 				"url": {
-					"raw": "https://rmbeuegotizcsthauqty.supabase.co/auth/v1/token?grant_type=password",
+					"raw": "https://unxnlzqanpriqfemuaeh.supabase.co/auth/v1/token?grant_type=password",
 					"protocol": "https",
 					"host": [
-						"rmbeuegotizcsthauqty",
+						"unxnlzqanpriqfemuaeh",
 						"supabase",
 						"co"
 					],
@@ -90,10 +91,10 @@
 					}
 				},
 				"url": {
-					"raw": "https://rmbeuegotizcsthauqty.supabase.co/auth/v1/token?grant_type=password",
+					"raw": "https://unxnlzqanpriqfemuaeh.supabase.co/auth/v1/token?grant_type=password",
 					"protocol": "https",
 					"host": [
-						"rmbeuegotizcsthauqty",
+						"unxnlzqanpriqfemuaeh",
 						"supabase",
 						"co"
 					],
@@ -143,10 +144,10 @@
 					}
 				},
 				"url": {
-					"raw": "https://rmbeuegotizcsthauqty.supabase.co/auth/v1/token?grant_type=password",
+					"raw": "https://unxnlzqanpriqfemuaeh.supabase.co/auth/v1/token?grant_type=password",
 					"protocol": "https",
 					"host": [
-						"rmbeuegotizcsthauqty",
+						"unxnlzqanpriqfemuaeh",
 						"supabase",
 						"co"
 					],
@@ -187,10 +188,10 @@
 					}
 				],
 				"url": {
-					"raw": "https://rmbeuegotizcsthauqty.supabase.co/rest/v1/products?select=*&category_id=eq.1",
+					"raw": "https://unxnlzqanpriqfemuaeh.supabase.co/rest/v1/products?select=*&category_id=eq.1",
 					"protocol": "https",
 					"host": [
-						"rmbeuegotizcsthauqty",
+						"unxnlzqanpriqfemuaeh",
 						"supabase",
 						"co"
 					],
@@ -235,10 +236,10 @@
 					}
 				],
 				"url": {
-					"raw": "https://rmbeuegotizcsthauqty.supabase.co/rest/v1/customers?select=*&country_code=eq.CR",
+					"raw": "https://unxnlzqanpriqfemuaeh.supabase.co/rest/v1/customers?select=*&country_code=eq.CR",
 					"protocol": "https",
 					"host": [
-						"rmbeuegotizcsthauqty",
+						"unxnlzqanpriqfemuaeh",
 						"supabase",
 						"co"
 					],
@@ -295,10 +296,10 @@
 					}
 				},
 				"url": {
-					"raw": "https://rmbeuegotizcsthauqty.supabase.co/rest/v1/invoices?select=*,customers(*)",
+					"raw": "https://unxnlzqanpriqfemuaeh.supabase.co/rest/v1/invoices?select=*,customers(*)",
 					"protocol": "https",
 					"host": [
-						"rmbeuegotizcsthauqty",
+						"unxnlzqanpriqfemuaeh",
 						"supabase",
 						"co"
 					],
@@ -339,10 +340,10 @@
 					}
 				],
 				"url": {
-					"raw": "https://rmbeuegotizcsthauqty.supabase.co/rest/v1/invoice_lines?select=*,products(*)",
+					"raw": "https://unxnlzqanpriqfemuaeh.supabase.co/rest/v1/invoice_lines?select=*,products(*)",
 					"protocol": "https",
 					"host": [
-						"rmbeuegotizcsthauqty",
+						"unxnlzqanpriqfemuaeh",
 						"supabase",
 						"co"
 					],
@@ -392,10 +393,10 @@
 					}
 				},
 				"url": {
-					"raw": "https://rmbeuegotizcsthauqty.supabase.co/rest/v1/invoices",
+					"raw": "https://unxnlzqanpriqfemuaeh.supabase.co/rest/v1/invoices",
 					"protocol": "https",
 					"host": [
-						"rmbeuegotizcsthauqty",
+						"unxnlzqanpriqfemuaeh",
 						"supabase",
 						"co"
 					],
@@ -439,10 +440,10 @@
 					}
 				},
 				"url": {
-					"raw": "https://rmbeuegotizcsthauqty.supabase.co/rest/v1/invoice_lines",
+					"raw": "https://unxnlzqanpriqfemuaeh.supabase.co/rest/v1/invoice_lines",
 					"protocol": "https",
 					"host": [
-						"rmbeuegotizcsthauqty",
+						"unxnlzqanpriqfemuaeh",
 						"supabase",
 						"co"
 					],
@@ -496,7 +497,8 @@
 						"rpc",
 						"create_invoice"
 					]
-				}},
+				}
+			},
 			"response": []
 		}
 	]

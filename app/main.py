@@ -141,7 +141,7 @@ def create_invoice_menu(sb: Client, customers, products):
         else:
             print("Invoice created successfully.") #I THINK
 
-def list_invoices(sb: Client, customers, products):
+def list_invoices(sb: Client):
     invoices = sb.table("invoices").select("*").execute()
 
     if not invoices:
@@ -210,6 +210,47 @@ def list_invoices_by_product(sb: Client, products):
         print(f"Invoice {inv['id']} for {customer_name} - Date {inv['invoice_date']} - Total ${inv['total_amount']}")
         print(f"  -> {line['quantity']} x {product_name} @ ${line['unit_price']} = ${line['line_total']}")
 
+def list_invoices_by_country(sb: Client, customers):
+    country_code = input("Enter country code (e.g., US, CR): ").strip().upper()
+    if not any(c["country_code"].upper() == country_code for c in customers):
+        print("No customers found in that country.")
+        return
+
+    # Get all customers in this country
+    customer_ids = [c["id"] for c in customers if c["country_code"].upper() == country_code]
+
+    invoices = sb.table("invoices").select("*").in_("customer_id", customer_ids).execute()
+    if not invoices.data:
+        print(f"No invoices found for customers in {country_code}.")
+        return
+
+    print(f"\nInvoices for customers in {country_code}:")
+    for inv in invoices.data:
+        customer_name = sb.table("customers").select("name").eq("id", inv["customer_id"]).execute().data[0]["name"]
+        print(f"Invoice {inv['id']} for {customer_name} - Date {inv['invoice_date']} - Total ${inv['total_amount']}")
+        lines = sb.table("invoice_lines").select("*").eq("invoice_id", inv["id"]).execute().data
+        for line in lines:
+            product_name = sb.table("products").select("name").eq("id", line["product_id"]).execute().data[0]["name"]
+            print(f"  -> {line['quantity']} x {product_name} @ ${line['unit_price']} = ${line['line_total']}")
+
+def list_invoices_by_date_range(sb: Client):
+    start_date = input("Enter start date (YYYY-MM-DD): ").strip()
+    end_date = input("Enter end date (YYYY-MM-DD): ").strip()
+
+    invoices = sb.table("invoices").select("*").gte("invoice_date", start_date).lte("invoice_date", end_date).execute()
+    if not invoices.data:
+        print(f"No invoices found between {start_date} and {end_date}.")
+        return
+
+    print(f"\nInvoices from {start_date} to {end_date}:")
+    for inv in invoices.data:
+        customer_name = sb.table("customers").select("name").eq("id", inv["customer_id"]).execute().data[0]["name"]
+        print(f"Invoice {inv['id']} for {customer_name} - Date {inv['invoice_date']} - Total ${inv['total_amount']}")
+        lines = sb.table("invoice_lines").select("*").eq("invoice_id", inv["id"]).execute().data
+        for line in lines:
+            product_name = sb.table("products").select("name").eq("id", line["product_id"]).execute().data[0]["name"]
+            print(f"  -> {line['quantity']} x {product_name} @ ${line['unit_price']} = ${line['line_total']}")
+
 
 if __name__ == "__main__": 
     print("Choose user to log in:")
@@ -241,29 +282,29 @@ if __name__ == "__main__":
         print("2. List invoices")
         print("3. Filter invoices by customer")
         print("4. Filter invoices by product")
-        print("5. Exit")
+        print("5. Filter invoices by country")
+        print("6. Filter invoices by date range")
+        print("7. Exit")
         choice = input("Choose an option: ")
         if choice == "1":
             create_invoice_menu(sb, customers, products)
         elif choice == "2":
-            list_invoices(sb, customers,products)
+            list_invoices(sb)
         elif choice == "3":
             list_invoices_by_customer(sb, customers)
         elif choice == "4":
             list_invoices_by_product(sb, products)
         elif choice == "5":
+            list_invoices_by_country(sb, customers)
+        elif choice == "6":
+            list_invoices_by_date_range(sb)
+        elif choice == "7":
             break
         else:
             print("Invalid option.")
 
     
 
-    """ 
-    CRUD	básico	de	categorías	y	productos.
-    CRUD	básico	de	países	y	clientes.
-    Registro	de	facturas	y	detalle	de	factura	(líneas).
-    Listados	y	filtros	(por	categoría,	por	país,	por	rango	de	fechas). 
-    """
 
     
     

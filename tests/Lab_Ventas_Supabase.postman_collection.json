@@ -1,10 +1,9 @@
 {
 	"info": {
-		"_postman_id": "1daba982-d7a4-41a5-b515-a45fdb39c9ef",
+		"_postman_id": "e3a686f1-25e5-478b-adc0-b42c67e38dbb",
 		"name": "Lab_Ventas_Supabase",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "46267459",
-		"_collection_link": "https://rodrigo-7482025.postman.co/workspace/Rodrigo's-Workspace~5855ec7b-29d6-4589-8e20-6ee0269a3998/collection/46267459-1daba982-d7a4-41a5-b515-a45fdb39c9ef?action=share&source=collection_link&creator=46267459"
+		"_exporter_id": "47936136"
 	},
 	"item": [
 		{
@@ -454,6 +453,50 @@
 					]
 				}
 			},
+			"response": []
+		},
+		{
+			"name": "Create_Invoice",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "apikey",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVueG5senFhbnByaXFmZW11YWVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc5NjI3MjksImV4cCI6MjA2MzUzODcyOX0.n_OOCLz2Rtj3SzSPbqfIuuBhRALrAaHZPcPCu6zrxWQ"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVueG5senFhbnByaXFmZW11YWVoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0Nzk2MjcyOSwiZXhwIjoyMDYzNTM4NzI5fQ.FC5GpvmnAfbeyDvMo-CX4-yqRi5jdCS8PAZ6fFOa_cU"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \"customer_id\": 4,\r\n \"items\": [\r\n    { \"product_id\": 5, \"quantity\": 2 },                 \r\n    { \"product_id\": 10, \"quantity\": 5, \"unit_price\": 39.9 }\r\n ] \r\n }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://unxnlzqanpriqfemuaeh.supabase.co/rest/v1/rpc/create_invoice",
+					"protocol": "https",
+					"host": [
+						"unxnlzqanpriqfemuaeh",
+						"supabase",
+						"co"
+					],
+					"path": [
+						"rest",
+						"v1",
+						"rpc",
+						"create_invoice"
+					]
+				}},
 			"response": []
 		}
 	]

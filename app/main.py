@@ -19,7 +19,7 @@ PWD_03 = os.getenv("USER03_PASSWORD")
 def login() -> Client: 
     
     sb: Client = create_client(URL, KEY) 
-    auth = sb.auth.sign_in_with_password({"email": EMAIL_01, "password":PWD_01}) #Change access here
+    auth = sb.auth.sign_in_with_password({"email": EMAIL_02, "password":PWD_02}) #Change access here
     
     if not auth.session: 
         raise SystemExit("Login failed.") 
@@ -28,12 +28,16 @@ def login() -> Client:
     return sb 
  
 def list_my_products(sb: Client): 
+    # Check all products and their categories
+    products = sb.table("products").select("id, name, category_id").execute()
+    category_details = sb.table("categories").select("*").execute()
+    cat_map = {cat["id"]: cat["name"] for cat in category_details.data}
     res = sb.table("products").select("*").execute() 
-    print("Products (RLS applied):", res.data) 
+    print("Products (RLS applied):", [(prod["name"], cat_map.get(prod["category_id"])) for prod in products.data]) 
  
 def list_my_customers(sb: Client): 
     res = sb.table("customers").select("*").execute() 
-    print("Customers (RLS applied):", res.data) 
+    print("Customers (RLS applied):", [(cx["name"], cx["country_code"]) for cx in res.data]) 
  
 def create_invoice(sb: Client, customer_id: int): 
     inv = sb.table("invoices").insert({"customer_id": customer_id}).select("*").execute() 
@@ -64,15 +68,15 @@ def debug_user_permissions(sb: Client):
     
     # Country permissions
     countries = sb.table("user_allowed_country").select("*").eq("user_id", user_id).execute()
-    print(f"Country permissions:", countries.data)
+    print(f"Country permissions:", [country["country_code"] for country in countries.data])
     
     # Category permissions  
     categories = sb.table("user_allowed_category").select("*").eq("user_id", user_id).execute()
-    print(f"Category permissions:", categories.data)
+    category_ids = [category["category_id"] for category in categories.data]
+    category_details = sb.table("categories").select("*").in_("id", category_ids).execute()
+    print(f"Category permissions:", [cat["name"] for cat in category_details.data])
     
-    # Check all products and their categories
-    all_products = sb.table("products").select("id, name, category_id").execute()
-    print("All products:", all_products.data)
+    
 
 if __name__ == "__main__": 
     
@@ -81,3 +85,12 @@ if __name__ == "__main__":
     list_my_products(sb) 
     list_my_customers(sb) 
     # Completar: input() para IDs y crear factura + líneas
+    
+    """ 
+    CRUD	básico	de	categorías	y	productos.
+    CRUD	básico	de	países	y	clientes.
+    Registro	de	facturas	y	detalle	de	factura	(líneas).
+    Listados	y	filtros	(por	categoría,	por	país,	por	rango	de	fechas). 
+    """
+    
+    

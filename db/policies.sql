@@ -133,7 +133,7 @@ with check (
 );
 
 create policy"user_see_own_category_perms" 
-on public.user_allowed_categoryforR select 
+on public.user_allowed_category for select 
 to authenticated using (user_id = auth.uid());
 
 create policy"user_see_own_country_perms" 
